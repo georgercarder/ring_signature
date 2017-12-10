@@ -12,6 +12,18 @@ echo "need to rearrange iy iP etc"
 
 hereeeeeeeeeeeeee #deliberate error to remind to rearrange
 
+if [ $r -le $c ]; then
+	i=$c
+
+	while [ $i -ge $(( $r + 1 )) ]
+	do
+		cat sign/inputs.local/$i\x > sign/inputs.local/$(( $i + 1 ))\x
+		cat sign/outputs.local/$i\y > sign/outputs.local/$(( $i + 1 ))\y	
+	i=$(( $i - 1 ))
+	done
+
+fi
+
 # cases to get my and mx
 
 #write function here for E_k(A+B)
@@ -36,7 +48,7 @@ function S(){
 
 	1) E $(xor $(cat sign/outputs.local/1y) $(cat sign/value.random/v) )
 
-	*) E $(xor $1\y $(S $(( $i - 1 )) ) )	
+	*) E $(xor $(cat sign/outputs.local/$1\y) $(S $(( $i - 1 )) ) )	
 	
 	esac
 }
@@ -47,7 +59,7 @@ function Sinv(){
 
 	$(( $c + 1 ))) Ekinv $( xor $(cat sign/outputs.local/$(( $c + 1 ))\y) $( Ekinv $sign/value.random/v))
 
-	*)
+	*) Ekinv $( xor $(cat sign/outputs.local/$1\y) $(Sinv $(( $1 + 1 ))) )
 
 
 
@@ -55,7 +67,7 @@ function Sinv(){
 
 
 
-
+set ry # deliberate error to draw attention to this
 
 
 
