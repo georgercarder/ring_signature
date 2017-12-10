@@ -12,13 +12,19 @@ echo "need to rearrange iy iP etc"
 
 hereeeeeeeeeeeeee #deliberate error to remind to rearrange
 
+mkdir -r sign/publickeys.anon
+
+cat sign/mykeys/public/my-public.pem > sign/publickeys.anon/$r\-public.pem
+
 if [ $r -le $c ]; then
 	i=$c
 
 	while [ $i -ge $(( $r + 1 )) ]
 	do
 		cat sign/inputs.local/$i\x > sign/inputs.local/$(( $i + 1 ))\x
-		cat sign/outputs.local/$i\y > sign/outputs.local/$(( $i + 1 ))\y	
+		cat sign/outputs.local/$i\y > sign/outputs.local/$(( $i + 1 ))\y
+		cat sign/publickeys.local/$i\-public.pem > sign/publickeys.anon/$(( $i + 1 ))\-public.pem
+	
 	i=$(( $i - 1 ))
 	done
 
@@ -46,6 +52,8 @@ function xor(){
 function S(){
 	case "$1" in
 
+	0) cat sign/value.random/v > E
+	
 	1) E $(xor $(cat sign/outputs.local/1y) $(cat sign/value.random/v) )
 
 	*) E $(xor $(cat sign/outputs.local/$1\y) $(S $(( $i - 1 )) ) )	
@@ -61,30 +69,19 @@ function Sinv(){
 
 	*) Ekinv $( xor $(cat sign/outputs.local/$1\y) $(Sinv $(( $1 + 1 ))) )
 
-
+	esac
 
 }
 
 
 
-set ry # deliberate error to draw attention to this
+# getting ry
 
+xor $( S $(( $r -1 )) ) $(Sinv $(( $r + 1 )) ) > sign/outputs.local/$r\y
 
+# getting rx
 
-#case "$r" in
-
-#$(( $c + 1  )) )	A=1y
-#			B=v
-#			xor
-#
-#1)
-
-#*)
-
-
-#esac
-
-
+openssl rsautl -decrypt -inkey sign/mykeys/private/my-private.pem -in sign/outputs.local/$r\y -out sign/inputs.local/$r\x
 
 
 
@@ -93,5 +90,4 @@ set ry # deliberate error to draw attention to this
 # randomly enumerate but keeping in pairs 
 
 # put in inputs.anon message pubickeys.anon and value.random
-
 

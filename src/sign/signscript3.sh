@@ -3,6 +3,16 @@
 
 # here we package up iP, v, ix and the message and put into the signed folder
 
+
+
+
+mkdir -p signed/inputs.anon
+mkdir -p signed/message
+mkdir -p signed/publickeys.anon
+mkdir -p signed/value.random
+mkdir -p signed/verify
+
+
 cp -r sign/publickeys.anon/* signed/publickeys.anon
 
 echo "# this is the set of public keys P1,...,Pn" >> signed/publickeys.anon/READMEpubkeys.md   
