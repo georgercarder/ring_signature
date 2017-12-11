@@ -70,65 +70,21 @@ function Ekinv(){
 
 
 
-#echo "1" >> sign/outputs.anon/1y ## init 1y to prevent error
+##find ry here
 
-#function S(){
-#	case "$1" in
+#building s1=E(y1+v) and vinv=Ekinv(v)
 
-#	0) cat sign/value.random/v > E ;;
-	
-#	1) Ek $( xor $(cat sign/outputs.anon/1y) $(cat sign/value.random/v) ) ;;
+#need to build y1+v
+#redo below
+openssl enc -in sign/value.random/v -out so -e -aes256 -k sign/k/keyhash.txt
+#need to build einv(v)
 
-#	*) Ek $(xor $(cat sign/outputs.anon/$1\y) $(S $(( $i - 1 )) ) )	 ;;
-	
-#	esac
-#}
-#################rewrite S()
-
-
-
-function S(){
-
-	i=$1
-	if [ $i == 0 ]; then	
-		cat sign/value.random/v > E
-	elif [ $i == 1 ]; then
-		Ek $( xor $(cat sign/outputs.anon/1y) $(cat sign/value.random/v) ) 
-
-	else 
-		Ek $(xor $(cat sign/outputs.anon/$1\y) $(S $(( $i - 1 )) ) )  
-
-	fi
-
-}
-
-#function Sinv(){
-
-#	case "$1" in
-
-#	$(( $c + 1 ))) Ekinv $( xor $(cat sign/outputs.anon/$(( $c + 1 ))\y) $( Ekinv $sign/value.random/v)) ;;
-
-#	*) Ekinv $( xor $(cat sign/outputs.anon/$1\y) $(Sinv $(( $1 + 1 ))) ) ;;
-
-#	esac
-
-#}
-
-function Sinv(){
-
-	i=$1
-	if [ $i==$(($c + 1 )) ]; then
-		Ekinv $( xor $(cat sign/outputs.anon/$(( $c + 1 ))\y) $( Ekinv $sign/value.random/v))
-	else
-		Ekinv $( xor $(cat sign/outputs.anon/$1\y) $(Sinv $(( $1 + 1 ))) )
-	fi
+# now do while loop to build ry
 
 
 
 
-
-}
-
+vinv=$( Ekinv $( cat sign/value.random/v ) )
 
 
 
