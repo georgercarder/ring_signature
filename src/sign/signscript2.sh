@@ -7,25 +7,38 @@
 
 r=$(( RANDOM % $(( $c + 1 )) + 1 ))
 
+echo 'r is' $r
+
 
 echo "need to rearrange iy iP etc"
 
-hereeeeeeeeeeeeee #deliberate error to remind to rearrange
 
-mkdir -r sign/publickeys.anon
+mkdir -p sign/publickeys.anon
 
 cat sign/mykeys/public/my-public.pem > sign/publickeys.anon/$r\-public.pem
 
 if [ $r -le $c ]; then
-	i=$c
+	i=$(( $c + 1 ))
 
-	while [ $i -ge $(( $r + 1 )) ]
+	while [ $i -ge $r ]
 	do
 		cat sign/inputs.local/$i\x > sign/inputs.local/$(( $i + 1 ))\x
 		cat sign/outputs.local/$i\y > sign/outputs.local/$(( $i + 1 ))\y
 		cat sign/publickeys.local/$i\-public.pem > sign/publickeys.anon/$(( $i + 1 ))\-public.pem
-	
+	echo $i 'i is'	
 	i=$(( $i - 1 ))
+	done
+
+         ##############
+
+	i=1
+
+	while [ $i -le $(( $r - 1 )) ]
+	do
+		cat sign/inputs.local/$i\x > sign/inputs.local/$i\x
+                cat sign/outputs.local/$i\y > sign/outputs.local/$i\y
+                cat sign/publickeys.local/$i\-public.pem > sign/publickeys.anon/$i\-public.pem
+	i=$(( $i + 1 ))
 	done
 
 fi
@@ -54,7 +67,7 @@ function S(){
 
 	0) cat sign/value.random/v > E
 	
-	1) E $(xor $(cat sign/outputs.local/1y) $(cat sign/value.random/v) )
+	1) E $( xor $(cat sign/outputs.local/1y) $(cat sign/value.random/v) )
 
 	*) E $(xor $(cat sign/outputs.local/$1\y) $(S $(( $i - 1 )) ) )	
 	
