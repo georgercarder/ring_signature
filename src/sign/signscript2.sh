@@ -14,6 +14,9 @@ echo "need to rearrange iy iP etc"
 
 
 mkdir -p sign/publickeys.anon
+mkdir -p sign/inputs.anon
+mkdir -p sign/outputs.anon
+
 
 cat sign/mykeys/public/my-public.pem > sign/publickeys.anon/$r\-public.pem
 
@@ -22,8 +25,8 @@ if [ $r -le $c ]; then
 
 	while [ $i -ge $r ]
 	do
-		cat sign/inputs.local/$i\x > sign/inputs.local/$(( $i + 1 ))\x
-		cat sign/outputs.local/$i\y > sign/outputs.local/$(( $i + 1 ))\y
+		cat sign/inputs.local/$i\x > sign/inputs.anon/$(( $i + 1 ))\x
+		cat sign/outputs.local/$i\y > sign/outputs.anon/$(( $i + 1 ))\y
 		cat sign/publickeys.local/$i\-public.pem > sign/publickeys.anon/$(( $i + 1 ))\-public.pem
 	echo $i 'i is'	
 	i=$(( $i - 1 ))
@@ -35,8 +38,8 @@ if [ $r -le $c ]; then
 
 	while [ $i -le $(( $r - 1 )) ]
 	do
-		cat sign/inputs.local/$i\x > sign/inputs.local/$i\x
-                cat sign/outputs.local/$i\y > sign/outputs.local/$i\y
+		cat sign/inputs.local/$i\x > sign/inputs.anon/$i\x
+                cat sign/outputs.local/$i\y > sign/outputs.anon/$i\y
                 cat sign/publickeys.local/$i\-public.pem > sign/publickeys.anon/$i\-public.pem
 	i=$(( $i + 1 ))
 	done
@@ -67,9 +70,9 @@ function S(){
 
 	0) cat sign/value.random/v > E
 	
-	1) E $( xor $(cat sign/outputs.local/1y) $(cat sign/value.random/v) )
+	1) E $( xor $(cat sign/outputs.anon/1y) $(cat sign/value.random/v) )
 
-	*) E $(xor $(cat sign/outputs.local/$1\y) $(S $(( $i - 1 )) ) )	
+	*) E $(xor $(cat sign/outputs.anon/$1\y) $(S $(( $i - 1 )) ) )	
 	
 	esac
 }
@@ -78,9 +81,9 @@ function Sinv(){
 
 	case "$1" in
 
-	$(( $c + 1 ))) Ekinv $( xor $(cat sign/outputs.local/$(( $c + 1 ))\y) $( Ekinv $sign/value.random/v))
+	$(( $c + 1 ))) Ekinv $( xor $(cat sign/outputs.anon/$(( $c + 1 ))\y) $( Ekinv $sign/value.random/v))
 
-	*) Ekinv $( xor $(cat sign/outputs.local/$1\y) $(Sinv $(( $1 + 1 ))) )
+	*) Ekinv $( xor $(cat sign/outputs.anon/$1\y) $(Sinv $(( $1 + 1 ))) )
 
 	esac
 
@@ -90,11 +93,11 @@ function Sinv(){
 
 # getting ry
 
-xor $( S $(( $r -1 )) ) $(Sinv $(( $r + 1 )) ) > sign/outputs.local/$r\y
+xor $( S $(( $r - 1 )) ) $(Sinv $(( $r + 1 )) ) > sign/outputs.anon/$r\y
 
 # getting rx
 
-openssl rsautl -decrypt -inkey sign/mykeys/private/my-private.pem -in sign/outputs.local/$r\y -out sign/inputs.local/$r\x
+openssl rsautl -decrypt -inkey sign/mykeys/private/my-private.pem -in sign/outputs.anon/$r\y -out sign/inputs.anon/$r\x
 
 
 
