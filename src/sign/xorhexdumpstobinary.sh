@@ -3,15 +3,13 @@
 # given variables A,B, we xor the corresponding hexdumps hexdumpA, hexdumpB 
 # the output is Z
 
-rm A 
-rm B
-rm Z
 
-echo $A >> A
-echo $B >> B
 
-hexdumpA=$(hexdump -ve '1/1 "%02x\n"' A)
-hexdumpB=$(hexdump -ve '1/1 "%02x\n"' B)
+echo $A > sign/A
+echo $B > sign/B
+
+hexdumpA=$(hexdump -ve '1/1 "%02x\n"' sign/A)
+hexdumpB=$(hexdump -ve '1/1 "%02x\n"' sign/B)
 
 
 la=$(echo $hexdumpA|wc -c)
@@ -47,6 +45,6 @@ done
 
 echo $Z
 
-echo $Z >> ./sign/Z
+echo $Z > sign/Z
 
-xxd -r -p ./sign/Z ./sign/Z.bin
+xxd -r -p sign/Z sign/Z.bin

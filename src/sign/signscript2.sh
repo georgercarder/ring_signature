@@ -5,7 +5,7 @@
 
 # second part of signscript...
 
-r=$(( RANDOM % $(( $c + 1 )) + 1 ))
+r=$(( RANDOM % $c + 1 ))
 
 echo 'r is' $r
 
@@ -50,6 +50,15 @@ fi
 
 #write function here for E_k(A+B)
 
+function xor(){
+	A=$1
+	B=$2
+	export A
+	export B
+
+	./sign/xorhexdumpstobinary.sh
+}
+
 
 function Ek(){
 	openssl enc -in $1 -out E -e -aes256 -k sign/k/keyhash.txt
@@ -59,35 +68,72 @@ function Ekinv(){
 	openssl enc -in $1 -out Einv -e -aes256 -k sign/k/keyhash.txt
 }
 
-function xor(){
-	A=$1
-	B=$2
-	./sign/xorhexdumpstobinary.sh
-}
+
+
+#echo "1" >> sign/outputs.anon/1y ## init 1y to prevent error
+
+#function S(){
+#	case "$1" in
+
+#	0) cat sign/value.random/v > E ;;
+	
+#	1) Ek $( xor $(cat sign/outputs.anon/1y) $(cat sign/value.random/v) ) ;;
+
+#	*) Ek $(xor $(cat sign/outputs.anon/$1\y) $(S $(( $i - 1 )) ) )	 ;;
+	
+#	esac
+#}
+#################rewrite S()
+
+
 
 function S(){
-	case "$1" in
 
-	0) cat sign/value.random/v > E
-	
-	1) E $( xor $(cat sign/outputs.anon/1y) $(cat sign/value.random/v) )
+	i=$1
+	if [ $i == 0 ]; then	
+		cat sign/value.random/v > E
+	elif [ $i == 1 ]; then
+		Ek $( xor $(cat sign/outputs.anon/1y) $(cat sign/value.random/v) ) 
 
-	*) E $(xor $(cat sign/outputs.anon/$1\y) $(S $(( $i - 1 )) ) )	
-	
-	esac
+	else 
+		Ek $(xor $(cat sign/outputs.anon/$1\y) $(S $(( $i - 1 )) ) )  
+
+	fi
+
 }
+
+#function Sinv(){
+
+#	case "$1" in
+
+#	$(( $c + 1 ))) Ekinv $( xor $(cat sign/outputs.anon/$(( $c + 1 ))\y) $( Ekinv $sign/value.random/v)) ;;
+
+#	*) Ekinv $( xor $(cat sign/outputs.anon/$1\y) $(Sinv $(( $1 + 1 ))) ) ;;
+
+#	esac
+
+#}
 
 function Sinv(){
 
-	case "$1" in
+	i=$1
+	if [ $i==$(($c + 1 )) ]; then
+		Ekinv $( xor $(cat sign/outputs.anon/$(( $c + 1 ))\y) $( Ekinv $sign/value.random/v))
+	else
+		Ekinv $( xor $(cat sign/outputs.anon/$1\y) $(Sinv $(( $1 + 1 ))) )
+	fi
 
-	$(( $c + 1 ))) Ekinv $( xor $(cat sign/outputs.anon/$(( $c + 1 ))\y) $( Ekinv $sign/value.random/v))
 
-	*) Ekinv $( xor $(cat sign/outputs.anon/$1\y) $(Sinv $(( $1 + 1 ))) )
 
-	esac
+
 
 }
+
+
+
+
+
+
 
 
 

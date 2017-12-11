@@ -21,7 +21,7 @@ cp -r sign/value.random/v signed/value.random
 
 echo "# this is the random value v" >> signed/value.random/READMEvaluerandom.md
 
-cp -r sign/inputs.local/*x signed/inputs.anon
+cp -r sign/inputs.anon/*x signed/inputs.anon
 
 echo "# this is the set of inputs x1,...,xn" >> signed/inputs.anon/READMEinputs.md
 
