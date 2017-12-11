@@ -29,7 +29,19 @@ cp -r message/message.txt signed/message
 
 echo "# this is the signed message. be sure to validate if unsure..." >> signed/message/READMEmessage.md
 
+i=1
+while [ $i -le $(( $c + 2 )) ]
+do
+        count=$(cat sign/inputs.anon/$i\x|wc -c)
+        if [ $count -ne 512 ]; then
+                rm -r sign/inp* sign/k sign/message sign/mykeys sign/outp* sign/publ* sign/signersinput sign/summ* sign/val* signed
 
+                echo 'Signing this message failed. Run again'
+
+                
+	fi
+        i=$(( $i + 1 ))
+done
 
 ##########3
 ##########

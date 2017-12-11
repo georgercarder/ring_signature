@@ -104,18 +104,5 @@ cat sign/summands/Z.bin > sign/outputs.anon/$r\y
 openssl rsautl -raw -decrypt -inkey sign/mykeys/private/my-private.pem -in sign/outputs.anon/$r\y -out sign/inputs.anon/$r\x
 
 
-i=1
-while [ $i -le $(( $c + 2 )) ]
-do
-	count=$(cat sign/inputs.anon/$i\x|wc -c)
-	if [ $count -ne 512 ]
-		rm -r inp* k message mykeys outp* publ* signersinput summ* val*
-
-		echo 'Signing this message failed. Run again'
-		
-		exit 1
-
-	i=$(( $i + 1 ))
-	done
 
 
