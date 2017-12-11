@@ -27,7 +27,7 @@ openssl genrsa -out ./sign/inputs.local/inputgenerators/inputgenerators.private/
 
 
 openssl rsa -in ./sign/inputs.local/inputgenerators/inputgenerators.private/input-private.pem -out ./sign/inputs.local/inputgenerators/input-public.pem -pubout -outform PEM
-x=$(echo "seed"|sha256sum)
+x=$(echo "seeds"|sha256sum)
 seed=${x:0:63}
 
 x=1

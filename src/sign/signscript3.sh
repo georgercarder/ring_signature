@@ -29,6 +29,8 @@ cp -r message/message.txt signed/message
 
 echo "# this is the signed message. be sure to validate if unsure..." >> signed/message/READMEmessage.md
 
+
+
 ##########3
 ##########
 ######### need to build verify

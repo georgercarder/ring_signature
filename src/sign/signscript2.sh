@@ -75,7 +75,7 @@ i=$(( $c + 2 ))
 
 while [ $i -ge $(( $r + 1 )) ] 
 do
-	cat sign/output.anon/$i\y > sign/summands/1s
+	cat sign/outputs.anon/$i\y > sign/summands/1s
 
 	./sign/xorhexdumpstobinary.sh
 
@@ -101,10 +101,21 @@ cat sign/summands/Z.bin > sign/outputs.anon/$r\y
 
 # getting rx
 
-openssl rsautl -decrypt -inkey sign/mykeys/private/my-private.pem -in sign/outputs.anon/$r\y -out sign/inputs.anon/$r\x
+openssl rsautl -raw -decrypt -inkey sign/mykeys/private/my-private.pem -in sign/outputs.anon/$r\y -out sign/inputs.anon/$r\x
 
 
-cat sign/inputs.anon/$r\x > signed/inputs.anon/$r\x
+i=1
+while [ $i -le $(( $c + 2 )) ]
+do
+	count=$(cat sign/inputs.anon/$i\x|wc -c)
+	if [ $count -ne 512 ]
+		rm -r inp* k message mykeys outp* publ* signersinput summ* val*
 
+		echo 'Signing this message failed. Run again'
+		
+		exit 1
+
+	i=$(( $i + 1 ))
+	done
 
 
