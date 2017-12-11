@@ -16,7 +16,7 @@ echo "need to rearrange iy iP etc"
 mkdir -p sign/publickeys.anon
 mkdir -p sign/inputs.anon
 mkdir -p sign/outputs.anon
-
+mkdir -p sign/summands
 
 cat sign/mykeys/public/my-public.pem > sign/publickeys.anon/$r\-public.pem
 
@@ -48,64 +48,63 @@ fi
 
 # cases to get my and mx
 
-#write function here for E_k(A+B)
-
-function xor(){
-	A=$1
-	B=$2
-	export A
-	export B
-
-	./sign/xorhexdumpstobinary.sh
-}
-
-
-function Ek(){
-	openssl enc -in $1 -out E -e -aes256 -k sign/k/keyhash.txt
-}
-
-function Ekinv(){
-	openssl enc -in $1 -out Einv -e -aes256 -k sign/k/keyhash.txt
-}
-
-
 
 ##find ry here
 
-#building s1=E(y1+v) and vinv=Ekinv(v)
+cat sign/value.random/v > sign/summands/2s
 
-#need to build y1+v
-#redo below
-openssl enc -in sign/value.random/v -out so -e -aes256 -k sign/k/keyhash.txt
-#need to build einv(v)
+i=1
+while [ $i -le $(( r - 1 )) ]
+do
+	cat sign/outputs.anon/$i\y > sign/summands/1s
 
-# now do while loop to build ry
+	./sign/xorhexdumpstobinary.sh
+
+	cat sign/summands/Z.bin > sign/summands/2s
+
+echo $i
+i=$(( $i + 1 ))
+done
+
+cat sign/summands/Z.bin > sign/summands/ZZ.bin
 
 
+openssl enc -in sign/value.random/v -out sign/summands/2s -d -aes256 -k sign/k/keyhash.txt
+
+i=$(( $c + 2 ))
+
+while [ $i -ge $(( $r + 1 )) ] 
+do
+	cat sign/output.anon/$i\y > sign/summands/1s
+
+	./sign/xorhexdumpstobinary.sh
+
+	cat sign/summands/Z.bin > sign/summands/2s 
+
+echo $i
+i=$(( $i - 1 ))
+done
 
 
-vinv=$( Ekinv $( cat sign/value.random/v ) )
+# now we have Z.bin and ZZ.bin
 
+cat sign/summands/Z.bin > sign/summands/1s
+cat sign/summands/ZZ.bin > sign/summands/2s
 
+./sign/xorhexdumpstobinary.sh
 
-
-
+cat sign/summands/Z.bin > sign/outputs.anon/$r\y
 
 
 
 # getting ry
-
-xor $( S $(( $r - 1 )) ) $(Sinv $(( $r + 1 )) ) > sign/outputs.anon/$r\y
 
 # getting rx
 
 openssl rsautl -decrypt -inkey sign/mykeys/private/my-private.pem -in sign/outputs.anon/$r\y -out sign/inputs.anon/$r\x
 
 
+cat sign/inputs.anon/$r\x > signed/inputs.anon/$r\x
 
 
-# put my-public.pem and mx with i-public.pem and ix
-# randomly enumerate but keeping in pairs 
-
-# put in inputs.anon message pubickeys.anon and value.random
 
