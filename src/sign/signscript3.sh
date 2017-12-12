@@ -34,7 +34,7 @@ while [ $i -le $(( $c + 2 )) ]
 do
         count=$(cat sign/inputs.anon/$i\x|wc -c)
         if [ $count -ne 512 ]; then
-                rm -r sign/inp* sign/k sign/message sign/mykeys sign/outp* sign/publ* sign/signersinput sign/summ* sign/val* signed
+            #    rm -r sign/inp* sign/k sign/message sign/mykeys sign/outp* sign/publ* sign/signersinput sign/summ* sign/val* signed
 
                 echo 'Signing this message failed. Run again'
 

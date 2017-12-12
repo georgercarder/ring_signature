@@ -12,6 +12,7 @@ cp -r publickeys.local sign
 
 
 c=$(($(ls -l|wc -l)-1))
+echo $c c is
 export c
 
 ./sign/signscript.sh
@@ -19,8 +20,9 @@ export c
 
 ./sign/signscript3.sh
 
+#./validate.signed/validatesigned.sh
 
-
+#mv validate signed
 
 
 ####

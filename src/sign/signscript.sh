@@ -31,7 +31,7 @@ x=$(echo "seeds"|sha256sum)
 seed=${x:0:63}
 
 x=1
-while [ $x -le $(( c + 1 )) ]
+while [ $x -le $c ]
 do
 y=$(echo $seed|sha256sum)
 seed=${y:0:63}
@@ -42,7 +42,7 @@ done
 
 # build ix 
 x=1
-while [ $x -le $(( $c + 1 )) ]
+while [ $x -le $c ]
 do
 openssl rsautl -encrypt -inkey ./sign/inputs.local/inputgenerators/input-public.pem -pubin -in ./sign/inputs.local/inputgenerators/$x\inputgenerator.txt -out ./sign/inputs.local/$x\x
 x=$(( $x + 1 ))
@@ -69,7 +69,7 @@ echo ${x:0:63} > ./sign/k/keyhash.txt
 # mx=rsa^-1(E_k^-1(v)+E_k(y7+E_k(y6+...E_k(y1+v)...)
 #construct iy
 x=1
-while [ $x -le $(( $c + 1 )) ]
+while [ $x -le $c ]
 do
 openssl rsautl -raw -encrypt -inkey ./sign/publickeys.local/$x\-public.pem -pubin -in ./sign/inputs.local/$x\x -out ./sign/outputs.local/$x\y
 x=$(( $x + 1 ))
