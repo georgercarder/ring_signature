@@ -10,8 +10,8 @@ hexdumpA=$(hexdump -ve '1/1 "%02x\n"' sign/summands/1s)
 hexdumpB=$(hexdump -ve '1/1 "%02x\n"' sign/summands/2s)
 
 
-la=$(echo $hexdumpA|wc -w)
-lb=$(echo $hexdumpB|wc -w)
+la=$(echo $hexdumpA|wc -c)
+lb=$(echo $hexdumpB|wc -c)
 
 echo $la $lb
 
@@ -34,6 +34,7 @@ yyy=$yy
 
 zzz=$((( $xxx ^ $yyy ) % 256 ))
 zzz=$(printf '%02x\n' $zzz)
+
 Z=$Z' '$zzz
 #echo $xxx $yyy $zzz
 i=$(($i+3))
