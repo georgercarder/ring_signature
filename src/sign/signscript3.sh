@@ -30,7 +30,7 @@ cp -r message/message.txt signed/message
 echo "# this is the signed message. be sure to validate if unsure..." >> signed/message/READMEmessage.md
 
 i=1
-while [ $i -le $(( $c + 2 )) ]
+while [ $i -le $(( $c + 1 )) ]
 do
         count=$(cat sign/inputs.anon/$i\x|wc -c)
         if [ $count -ne 512 ]; then
