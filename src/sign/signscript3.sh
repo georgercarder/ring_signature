@@ -39,7 +39,7 @@ do
                 echo 'Signing this message failed. Run again'
 
                 
-	fi
+  fi
         i=$(( $i + 1 ))
 done
 

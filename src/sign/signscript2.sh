@@ -21,30 +21,30 @@ mkdir -p sign/summands
 cat sign/mykeys/public/my-public.pem > sign/publickeys.anon/$r\-public.pem
 
 if [ $r -le $c ]; then
-	i=$c
+  i=$c
 
-	while [ $i -ge $r ]
-	do
-		cat sign/inputs.local/$i\x > sign/inputs.anon/$(( $i + 1 ))\x
-		cat sign/outputs.local/$i\y > sign/outputs.anon/$(( $i + 1 ))\y
-		cat sign/publickeys.local/$i\-public.pem > sign/publickeys.anon/$(( $i + 1 ))\-public.pem
-	echo $i 'i is'	
-	i=$(( $i - 1 ))
-	done
+  while [ $i -ge $r ]
+  do
+    cat sign/inputs.local/$i\x > sign/inputs.anon/$(( $i + 1 ))\x
+    cat sign/outputs.local/$i\y > sign/outputs.anon/$(( $i + 1 ))\y
+    cat sign/publickeys.local/$i\-public.pem > sign/publickeys.anon/$(( $i + 1 ))\-public.pem
+  echo $i 'i is'  
+  i=$(( $i - 1 ))
+  done
 
          ##############
 
-	i=1
+  i=1
 
-	while [ $i -le $(( $r - 1 )) ]
-	do
-		cat sign/inputs.local/$i\x > sign/inputs.anon/$i\x
+  while [ $i -le $(( $r - 1 )) ]
+  do
+    cat sign/inputs.local/$i\x > sign/inputs.anon/$i\x
                 cat sign/outputs.local/$i\y > sign/outputs.anon/$i\y
                 cat sign/publickeys.local/$i\-public.pem > sign/publickeys.anon/$i\-public.pem
 
-	echo $i i iss
-	i=$(( $i + 1 ))
-	done
+  echo $i i iss
+  i=$(( $i + 1 ))
+  done
 
 fi
 
@@ -58,11 +58,11 @@ cat sign/value.random/v > sign/summands/2s
 i=1
 while [ $i -le $(( r - 1 )) ]
 do
-	cat sign/outputs.anon/$i\y > sign/summands/1s
+  cat sign/outputs.anon/$i\y > sign/summands/1s
 
-	./sign/xorhexdumpstobinary.sh
+  ./sign/xorhexdumpstobinary.sh
 
-	openssl enc -in sign/summands/Z.bin -out sign/summands/2s -e -aes256 -k sign/k/keyhash.txt
+  openssl enc -in sign/summands/Z.bin -out sign/summands/2s -e -aes256 -k sign/k/keyhash.txt
 
 echo $i
 i=$(( $i + 1 ))
@@ -77,11 +77,11 @@ i=$(( $c + 1 ))
 
 while [ $i -ge $(( $r + 1 )) ] 
 do
-	cat sign/outputs.anon/$i\y > sign/summands/1s
+  cat sign/outputs.anon/$i\y > sign/summands/1s
 
-	./sign/xorhexdumpstobinary.sh
+  ./sign/xorhexdumpstobinary.sh
 
-	openssl enc -in sign/summands/Z.bin -out sign/summands/2s -d -aes256 -k sign/k/keyhash.txt 
+  openssl enc -in sign/summands/Z.bin -out sign/summands/2s -d -aes256 -k sign/k/keyhash.txt 
 
 echo $i
 i=$(( $i - 1 ))

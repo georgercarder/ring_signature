@@ -35,7 +35,7 @@ yyy=$yy
 zzz=$((( $xxx ^ $yyy ) % 256 ))
 zzz=$(printf '%02x\n' $zzz)
 Z=$Z' '$zzz
-#echo $xxx $yyy $zzz
+echo $xxx $yyy $zzz
 i=$(($i+3))
 done
 

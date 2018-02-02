@@ -62,7 +62,7 @@ do
 
 	./sign/xorhexdumpstobinary.sh
 
-	openssl enc -in sign/summands/Z.bin -out sign/summands/2s -e -aes256 -k sign/k/keyhash.txt
+	openssl enc -nosalt -in sign/summands/Z.bin -out sign/summands/2s -e -aes256 -k sign/k/keyhash.txt
 
 echo $i
 i=$(( $i + 1 ))
@@ -71,7 +71,7 @@ done
 cat sign/summands/2s > sign/summands/22s
 
 
-openssl enc -in sign/value.random/v -out sign/summands/2s -d -aes256 -k sign/k/keyhash.txt
+openssl enc -nosalt -in sign/value.random/v -out sign/summands/2s -d -aes256 -k sign/k/keyhash.txt
 
 i=$(( $c + 1 ))
 
@@ -81,7 +81,7 @@ do
 
 	./sign/xorhexdumpstobinary.sh
 
-	openssl enc -in sign/summands/Z.bin -out sign/summands/2s -d -aes256 -k sign/k/keyhash.txt 
+	openssl enc -nosalt -in sign/summands/Z.bin -out sign/summands/2s -d -aes256 -k sign/k/keyhash.txt 
 
 echo $i
 i=$(( $i - 1 ))
