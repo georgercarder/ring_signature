@@ -4,7 +4,7 @@ Ring Signature is an implementation of a cryptographic scheme for a member
  Adi Shami, and Yel Tauman.
 The signature goes as follows:
  A signer with public key Pk belonging to committee with public keys {P1,P2,...,Pn}, wants to 
- sign a message m.<br> The signer gets key k=H(m) from hash H() for use with 
+ sign a message m.<br> The signer gets key K=H(m) from hash H() for use with 
  symmetric cipher C(). Signer picks set of random values {x1,x2,..,v,..,xn} 
  where random value v replaces a kth value in place of the signer. From the 
  set the signer generates set {y1,y2,...,^,...,yn} where yi=rsa_Pi(xi) is the 
